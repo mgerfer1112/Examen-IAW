@@ -44,11 +44,14 @@ sudo -u www-data php "$MOODLE_DIRECTORY/admin/cli/install.php" \
   --dbname="$MOODLE_DB_NAME" \
   --dbuser="$MOODLE_DB_USER" \
   --dbpass="$MOODLE_DB_PASSWORD" \
-  --dbhost="localhost" \
+  --dbhost="$MYSQL_PRIVATE_IP" \
+  --lang="ES" \
   --fullname="$MOODLE_NAME" \
   --shortname="$MOODLE_SHORTNAME" \
+  --summary="Sitio Web del examen" \
   --adminuser="$MOODLE_USER" \
   --adminpass="$MOODLE_PASSWORD" \
+  --adminemail="$LE_MAIL"\
   --non-interactive \
   --agree-license
 
