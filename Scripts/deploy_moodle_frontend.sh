@@ -30,12 +30,14 @@ cp ../conf/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 
 #Instalamos las extensiones php requeridas para moodle
-sudo apt install -y php-curl php-zip php-xml php-mbstring php-gd php-intl php-soap php-ldap php-opcache php-readline
+sudo apt install -y php php-mysql php-libapache2-mod-php php-curl php-zip php-xml php-mbstring php-gd php-intl php-soap php-ldap php-opcache php-readline
 systemctl restart apache2
 
 
 #Cambiamos el máximo de caracteres para que cumpla los requisitos de moodle
 sudo sed -i 's/^;max_input_vars = 1000/max_input_vars = 5000/' /etc/php/8.3/cli/php.ini
+sudo sed -i 's/^;max_input_vars = 1000/max_input_vars = 5000/' /etc/php/8.3/apache2/php.ini
+
 
 sudo -u www-data php "$MOODLE_DIRECTORY/admin/cli/install.php" \
   --wwwroot="$MOODLE_URL" \
@@ -59,9 +61,8 @@ sudo -u www-data php "$MOODLE_DIRECTORY/admin/cli/install.php" \
 sudo sed -i "s|^;date.timezone =|date.timezone = UTC|" /etc/php/*/cli/php.ini
 sudo sed -i "s|^;date.timezone =|date.timezone = UTC|" /etc/php/*/apache2/php.ini
 
-#Aseguramos que Moodle funciona en https.
-sudo sed -i "s|'http://mgerfer1112.hopto.org/moodle'|'https://mgerfer1112.hopto.org/moodle'|" /var/www/html/moodle/config.php
-
+#CGF
 sed -i "/\$CFG->admin/a \$CFG->reverseproxy=1;\n\$CFG->sslproxy=1;" /var/www/html/config.php
+
 # Reiniciamos Apache
 systemctl restart apache2
