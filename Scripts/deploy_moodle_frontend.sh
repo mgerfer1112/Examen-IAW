@@ -18,16 +18,22 @@ wget https://download.moodle.org/download.php/direct/stable405/moodle-latest-405
 tar -xzf /tmp/moodle-latest-405.tgz -C /tmp
 
 
-#Permito a apache utilizar los directorios.
-sudo chown www-data:www-data $MOODLE_DIRECTORY
-sudo chown www-data:www-data $MOODLE_DATA_DIRECTORY
-sudo chmod -R 775 $MOODLE_DIRECTORY
-sudo chmod -R 775 $MOODLE_DATA_DIRECTORY
-
+# Preparamos el directorio de instalación de Moodle
+rm -rf "$MOODLE_DIRECTORY"
+mkdir -p "$MOODLE_DIRECTORY"
 
 # Movemos los archivos extraídos al directorio de instalación de Moodle
-rm -rf $MOODLE_DIRECTORY/*
 mv /tmp/moodle/* "$MOODLE_DIRECTORY"
+
+# Configuramos el directorio de datos de Moodle
+rm -rf "$MOODLE_DATA_DIRECTORY"
+mkdir -p "$MOODLE_DATA_DIRECTORY"
+chown -R www-data:www-data "$MOODLE_DATA_DIRECTORY"
+chmod -R 770 "$MOODLE_DATA_DIRECTORY"
+
+# Cambiamos los permisos de Moodle
+chown -R www-data:www-data "$MOODLE_DIRECTORY"
+chmod -R 755 "$MOODLE_DIRECTORY"
 
 # Copiamos el archivo .htaccess para configurar el acceso y seguridad en el servidor web
 cp ../htaccess/.htaccess /var/www/html/.htaccess
@@ -37,10 +43,23 @@ cp ../htaccess/.htaccess /var/www/html/.htaccess
 cp ../conf/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 
-#Instalamos las extensiones php requeridas para moodle
-sudo apt install -y php php-mysql libapache2-mod-php php-curl php-zip php-xml php-mbstring php-gd php-intl php-soap php-ldap php-opcache php-readline
+# Instalamos las extensiones PHP requeridas para Moodle
+sudo apt install -y php-curl php-zip php-xml php-mbstring php-gd php-intl php-imagick php-soap php-xmlrpc php-mysqli php-bz2 php-opcache
+
 systemctl restart apache2
 
+
+# Configuración recomendada de PHP para Apache
+sudo sed -i 's/^;max_execution_time\s=.*/max_execution_time = 300/' /etc/php/8.3/apache2/php.ini
+sudo sed -i 's/^;memory_limit\s=.*/memory_limit = 256M/' /etc/php/8.3/apache2/php.ini
+sudo sed -i 's/^;post_max_size\s=.*/post_max_size = 50M/' /etc/php/8.3/apache2/php.ini
+sudo sed -i 's/^;upload_max_filesize\s=.*/upload_max_filesize = 50M/' /etc/php/8.3/apache2/php.ini
+
+# Configuración recomendada de PHP para CLI
+sudo sed -i 's/^;max_execution_time\s=.*/max_execution_time = 300/' /etc/php/8.3/cli/php.ini
+sudo sed -i 's/^;memory_limit\s=.*/memory_limit = 256M/' /etc/php/8.3/cli/php.ini
+sudo sed -i 's/^;post_max_size\s=.*/post_max_size = 50M/' /etc/php/8.3/cli/php.ini
+sudo sed -i 's/^;upload_max_filesize\s=.*/upload_max_filesize = 50M/' /etc/php/8.3/cli/php.ini
 
 #Cambiamos el máximo de caracteres para que cumpla los requisitos de moodle
 sudo sed -i 's/^;max_input_vars = 1000/max_input_vars = 5000/' /etc/php/8.3/cli/php.ini

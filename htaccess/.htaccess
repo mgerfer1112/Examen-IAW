@@ -1,10 +1,12 @@
-# BEGIN WordPress
-<IfModule mod_rewrite.c>
+# Activar mod_rewrite
 RewriteEngine On
+
+# Redirigir la raíz (/) a index.php
+RewriteRule ^$ /index.php [L]
+
+# Asegurarnos de que las demás solicitudes se gestionen con Moodle
 RewriteBase /
 RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
-</IfModule>
-# END WordPress
