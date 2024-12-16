@@ -17,6 +17,14 @@ wget https://download.moodle.org/download.php/direct/stable405/moodle-latest-405
 # Extraemos el archivo descargado
 tar -xzf /tmp/moodle-latest-405.tgz -C /tmp
 
+
+#Permito a apache utilizar los directorios.
+#sudo chown www-data:www-data $MOODLE_DIRECTORY
+#sudo chown www-data:www-data $MOODLE_DATA_DIRECTORY
+#sudo chmod -R 775 $MOODLE_DIRECTORY
+#sudo chmod -R 775 $MOODLE_DATA_DIRECTORY
+
+
 # Movemos los archivos extraídos al directorio de instalación de Moodle
 rm -rf $MOODLE_DIRECTORY/*
 mv /tmp/moodle/* "$MOODLE_DIRECTORY"
