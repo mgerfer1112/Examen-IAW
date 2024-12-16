@@ -4,6 +4,10 @@ source .env
 apt update
 apt install nfs-common -y
 
+
+mkdir -p $MOODLE_DIRECTORY
+mkdir -p $MOODLE_DATA_DIRECTORY
+
 sudo mount $SERVER_IP:$MOODLE_DIRECTORY $MOODLE_DIRECTORY
 df -h
 
