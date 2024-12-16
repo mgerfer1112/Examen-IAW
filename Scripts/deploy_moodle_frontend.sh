@@ -19,10 +19,10 @@ tar -xzf /tmp/moodle-latest-405.tgz -C /tmp
 
 
 #Permito a apache utilizar los directorios.
-#sudo chown www-data:www-data $MOODLE_DIRECTORY
-#sudo chown www-data:www-data $MOODLE_DATA_DIRECTORY
-#sudo chmod -R 775 $MOODLE_DIRECTORY
-#sudo chmod -R 775 $MOODLE_DATA_DIRECTORY
+sudo chown www-data:www-data $MOODLE_DIRECTORY
+sudo chown www-data:www-data $MOODLE_DATA_DIRECTORY
+sudo chmod -R 775 $MOODLE_DIRECTORY
+sudo chmod -R 775 $MOODLE_DATA_DIRECTORY
 
 
 # Movemos los archivos extraídos al directorio de instalación de Moodle
@@ -38,7 +38,7 @@ cp ../conf/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 
 #Instalamos las extensiones php requeridas para moodle
-sudo apt install -y php php-mysql php-libapache2-mod-php php-curl php-zip php-xml php-mbstring php-gd php-intl php-soap php-ldap php-opcache php-readline
+sudo apt install -y php php-mysql libapache2-mod-php php-curl php-zip php-xml php-mbstring php-gd php-intl php-soap php-ldap php-opcache php-readline
 systemctl restart apache2
 
 
@@ -54,7 +54,7 @@ sudo -u www-data php "$MOODLE_DIRECTORY/admin/cli/install.php" \
   --dbname="$MOODLE_DB_NAME" \
   --dbuser="$MOODLE_DB_USER" \
   --dbpass="$MOODLE_DB_PASSWORD" \
-  --dbhost="$MYSQL_PRIVATE_IP" \
+  --dbhost="$BACKEND_PRIVATE_IP" \
   --lang="ES" \
   --fullname="$MOODLE_NAME" \
   --shortname="$MOODLE_SHORTNAME" \
@@ -63,14 +63,16 @@ sudo -u www-data php "$MOODLE_DIRECTORY/admin/cli/install.php" \
   --adminpass="$MOODLE_PASSWORD" \
   --adminemail="$LE_MAIL"\
   --non-interactive \
-  --agree-license
+  --agree-license 
+
+  
 
 #Completamos aspectos de la configuración referentes a la zona horaria.
 sudo sed -i "s|^;date.timezone =|date.timezone = UTC|" /etc/php/*/cli/php.ini
 sudo sed -i "s|^;date.timezone =|date.timezone = UTC|" /etc/php/*/apache2/php.ini
 
 #CGF
-sed -i "/\$CFG->admin/a \$CFG->reverseproxy=1;\n\$CFG->sslproxy=1;" /var/www/html/config.php
+sed -i "/\$CFG->admin/a \$CFG->reverseproxy=1;\n\$CFG->sslproxy=1;" $MOODLE_DIRECTORY/config.php
 
 # Reiniciamos Apache
 systemctl restart apache2
