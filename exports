@@ -1,0 +1,2 @@
+MOODLE_DIRECTORY Network(rw,sync,no_root_squash,no_subtree_check)
+MOODLE_DATA_DIRECTORY Network(rw,sync,no_root_squash,no_subtree_check)
