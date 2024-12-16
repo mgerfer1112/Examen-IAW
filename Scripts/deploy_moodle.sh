@@ -17,9 +17,6 @@ wget https://download.moodle.org/download.php/direct/stable405/moodle-latest-405
 # Extraemos el archivo descargado
 tar -xzf /tmp/moodle-latest-405.tgz -C /tmp
 
-# Preparamos el directorio de instalación de Moodle
-rm -rf "$MOODLE_DIRECTORY"
-mkdir -p "$MOODLE_DIRECTORY"
 
 # Movemos los archivos extraídos al directorio de instalación de Moodle
 mv /tmp/moodle/* "$MOODLE_DIRECTORY"
@@ -47,14 +44,6 @@ cp ../conf/000-default.conf /etc/apache2/sites-available/000-default.conf
 sudo apt install -y php-curl php-zip php-xml php-mbstring php-gd php-intl php-soap php-ldap php-opcache php-readline
 systemctl restart apache2
 
-# Crear la base de datos de Moodle
-mysql -u root <<< "DROP DATABASE IF EXISTS $MOODLE_DB_NAME"
-mysql -u root <<< "CREATE DATABASE $MOODLE_DB_NAME"
-
-# Crear el usuario y asignar permisos
-mysql -u root <<< "DROP USER IF EXISTS '$MOODLE_DB_USER'@'%'"
-mysql -u root <<< "CREATE USER '$MOODLE_DB_USER'@'%' IDENTIFIED BY '$MOODLE_DB_PASSWORD'"
-mysql -u root <<< "GRANT ALL PRIVILEGES ON $MOODLE_DB_NAME.* TO '$MOODLE_DB_USER'@'%'"
 
 #Cambiamos el máximo de caracteres para que cumpla los requisitos de moodle
 sudo sed -i 's/^;max_input_vars = 1000/max_input_vars = 5000/' /etc/php/8.3/cli/php.ini
