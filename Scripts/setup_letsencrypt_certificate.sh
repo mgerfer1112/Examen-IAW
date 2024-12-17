@@ -17,5 +17,8 @@ sudo apt remove certbot -y
 #Instalamos el cliente de Certbot con snapd
  snap install --classic certbot
 
+ ln -fs /snap/bin/certbot /usr/bin/certbot
+
+
 #Obtenemos el certificado y configuramos el servidor web Nginx.
 sudo certbot --nginx -m $LE_MAIL --agree-tos --no-eff-email -d $LE_DOMAIN --non-interactive

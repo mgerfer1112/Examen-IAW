@@ -18,16 +18,10 @@ wget https://download.moodle.org/download.php/direct/stable405/moodle-latest-405
 tar -xzf /tmp/moodle-latest-405.tgz -C /tmp
 
 
-# Preparamos el directorio de instalación de Moodle
-rm -rf "$MOODLE_DIRECTORY"
-mkdir -p "$MOODLE_DIRECTORY"
-
 # Movemos los archivos extraídos al directorio de instalación de Moodle
 mv /tmp/moodle/* "$MOODLE_DIRECTORY"
 
 # Configuramos el directorio de datos de Moodle
-rm -rf "$MOODLE_DATA_DIRECTORY"
-mkdir -p "$MOODLE_DATA_DIRECTORY"
 chown -R www-data:www-data "$MOODLE_DATA_DIRECTORY"
 chmod -R 770 "$MOODLE_DATA_DIRECTORY"
 
